@@ -583,6 +583,7 @@ class _DurationPickerDialog extends StatefulWidget {
     this.shadowColor,
     this.alignment,
     this.borderRadius,
+    this.padding,
   }) : super(key: key);
 
   /// The duration initially selected when the dialog is shown.
@@ -614,6 +615,7 @@ class _DurationPickerDialog extends StatefulWidget {
   final Color? shadowColor;
   final BorderRadiusGeometry? borderRadius;
   final Alignment? alignment;
+  final EdgeInsetsGeometry? padding;
 
   @override
   _DurationPickerState createState() => new _DurationPickerState();
@@ -702,7 +704,8 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
     );
 
     /// Widget with Head as Duration, Duration Picker Widget and Dialog as Actions - Cancel and OK.
-    final Widget pickerAndActions = new Container(
+    final Widget pickerAndActions = Container(
+      padding: widget.padding,
       alignment: widget.alignment,
       decoration: BoxDecoration(
         color: widget.backgroundColor ?? theme.dialogBackgroundColor,
@@ -719,8 +722,8 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
       child: new Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          widget.showHead ? head : Container(),
-          new Expanded(child: picker),
+          if (widget.showHead) head,
+          Expanded(child: picker),
           // picker grows and shrinks with the available space
           actions,
         ],
@@ -842,6 +845,7 @@ Future<Duration?> showDurationPicker({
         shadowColor: dialogStyle?.shadowColor,
         alignment: dialogStyle?.alignment,
         borderRadius: dialogStyle?.borderRadius,
+        padding: dialogStyle?.padding,
       );
       return builder == null ? child : builder(context, child);
     },
@@ -855,6 +859,7 @@ class DialogStyle {
     this.elevation,
     this.borderRadius,
     this.alignment,
+    this.padding,
   });
 
   final Color? backgroundColor;
@@ -862,6 +867,7 @@ class DialogStyle {
   final double? elevation;
   final Alignment? alignment;
   final BorderRadiusGeometry? borderRadius;
+  final EdgeInsetsGeometry? padding;
 }
 
 /// A Widget for duration picker.
@@ -940,16 +946,19 @@ class _DurationPicker extends State<DurationPicker> {
 
   Widget build(BuildContext context) {
     _ScreenSize screenSize = getScreenSize(MediaQuery.of(context).size.width);
-    return OrientationBuilder(builder: (context, orientation) {
-      return Container(
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Container(
           width: width,
           height: height,
-          child: Row(children: [
-            if (screenSize != _ScreenSize.mobile)
-              Expanded(flex: 5, child: getDurationFields(context, orientation)),
-            if (!(currentDurationType == DurationPickerMode.Day &&
-                screenSize != _ScreenSize.mobile))
-              Expanded(
+          child: Row(
+            children: [
+              if (screenSize != _ScreenSize.mobile)
+                Expanded(
+                    flex: 5, child: getDurationFields(context, orientation)),
+              if (!(currentDurationType == DurationPickerMode.Day &&
+                  screenSize != _ScreenSize.mobile))
+                Expanded(
                   flex: 5,
                   child: Stack(
                     children: [
@@ -960,43 +969,48 @@ class _DurationPicker extends State<DurationPicker> {
                         ),
                       Center(
                         child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              screenSize == _ScreenSize.mobile &&
-                                      currentDurationType ==
-                                          DurationPickerMode.Day
-                                  ? _ShowTimeArgs(
-                                      durationMode: DurationPickerMode.Day,
-                                      onChanged: updateValue,
-                                      onTextChanged: updateDurationFields,
-                                      value: days,
-                                      formatWidth: 2,
-                                      desc: "days",
-                                      isEditable: currentDurationType ==
-                                          DurationPickerMode.Day,
-                                      start: 0,
-                                      end: -1,
-                                    )
-                                  : Container(
-                                      width: 300,
-                                      height: 200,
-                                      child: _Dial(
-                                        value: currentValue,
-                                        mode: currentDurationType,
-                                        onChanged: updateDurationFields,
-                                      ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            screenSize == _ScreenSize.mobile &&
+                                    currentDurationType ==
+                                        DurationPickerMode.Day
+                                ? _ShowTimeArgs(
+                                    durationMode: DurationPickerMode.Day,
+                                    onChanged: updateValue,
+                                    onTextChanged: updateDurationFields,
+                                    value: days,
+                                    formatWidth: 2,
+                                    desc: "days",
+                                    isEditable: currentDurationType ==
+                                        DurationPickerMode.Day,
+                                    start: 0,
+                                    end: -1,
+                                  )
+                                : Container(
+                                    width: 300,
+                                    height: 200,
+                                    child: _Dial(
+                                      value: currentValue,
+                                      mode: currentDurationType,
+                                      onChanged: updateDurationFields,
                                     ),
-                            ]),
+                                  ),
+                          ],
+                        ),
                       ),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: getFields(),
                       ),
                     ],
-                  )),
-          ]));
-    });
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget getFields() {
