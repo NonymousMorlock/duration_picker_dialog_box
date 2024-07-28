@@ -956,8 +956,8 @@ class _DurationPicker extends State<DurationPicker> {
               if (screenSize != _ScreenSize.mobile)
                 Expanded(
                     flex: 5, child: getDurationFields(context, orientation)),
-              if (!(currentDurationType == DurationPickerMode.Day &&
-                  screenSize != _ScreenSize.mobile))
+              if (currentDurationType == DurationPickerMode.Day ||
+                  screenSize != _ScreenSize.mobile)
                 Expanded(
                   flex: 5,
                   child: Stack(
