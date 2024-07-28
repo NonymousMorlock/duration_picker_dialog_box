@@ -783,6 +783,7 @@ Future<Duration?> showDurationPicker({
   required BuildContext context,
   required Duration initialDuration,
   DurationPickerMode? durationPickerMode,
+  TransitionBuilder? builder,
   bool showHead = true,
   String? confirmText,
   String? cancelText,
@@ -794,18 +795,21 @@ Future<Duration?> showDurationPicker({
 }) async {
   return await showDialog<Duration>(
     context: context,
-    builder: (BuildContext context) => new _DurationPickerDialog(
-      initialDuration: initialDuration,
-      durationPickerMode: durationPickerMode,
-      showHead: showHead,
-      confirmText: confirmText,
-      cancelText: cancelText,
-      durationTypeChangerButtonColour: durationTypeChangerButtonColour,
-      selectionFieldTextColour: selectionFieldTextColour,
-      okTextColour: okTextColour,
-      cancelTextColour: cancelTextColour,
-      headColour: headColour,
-    ),
+    builder: (BuildContext context) {
+      final child = _DurationPickerDialog(
+        initialDuration: initialDuration,
+        durationPickerMode: durationPickerMode,
+        showHead: showHead,
+        confirmText: confirmText,
+        cancelText: cancelText,
+        durationTypeChangerButtonColour: durationTypeChangerButtonColour,
+        selectionFieldTextColour: selectionFieldTextColour,
+        okTextColour: okTextColour,
+        cancelTextColour: cancelTextColour,
+        headColour: headColour,
+      );
+      return builder == null ? child : builder(context, child);
+    },
   );
 }
 
