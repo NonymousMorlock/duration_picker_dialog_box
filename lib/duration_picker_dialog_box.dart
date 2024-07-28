@@ -574,6 +574,10 @@ class _DurationPickerDialog extends StatefulWidget {
     this.showHead = true,
     this.durationPickerMode,
     this.durationTypeChangerButtonColour,
+    this.selectionFieldTextColour,
+    this.okTextColour,
+    this.cancelTextColour,
+    this.headColour,
   }) : super(key: key);
 
   /// The duration initially selected when the dialog is shown.
@@ -594,6 +598,10 @@ class _DurationPickerDialog extends StatefulWidget {
   final DurationPickerMode? durationPickerMode;
 
   final Color? durationTypeChangerButtonColour;
+  final Color? selectionFieldTextColour;
+  final Color? okTextColour;
+  final Color? cancelTextColour;
+  final Color? headColour;
 
   @override
   _DurationPickerState createState() => new _DurationPickerState();
@@ -637,6 +645,7 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w400,
+          color: widget.headColour,
         ),
       ),
     );
@@ -650,6 +659,7 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
           onChange: _handleDurationChanged,
           durationTypeChangerButtonColour:
               widget.durationTypeChangerButtonColour,
+          selectionFieldTextColour: widget.selectionFieldTextColour,
         ));
 
     /// Action Buttons - Cancel and OK
@@ -663,11 +673,17 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
         children: <Widget>[
           TextButton(
             onPressed: _handleCancel,
-            child: Text(widget.cancelText ?? localizations.cancelButtonLabel),
+            child: Text(
+              widget.cancelText ?? localizations.cancelButtonLabel,
+              style: TextStyle(color: widget.cancelTextColour),
+            ),
           ),
           TextButton(
             onPressed: _handleOk,
-            child: Text(widget.confirmText ?? localizations.okButtonLabel),
+            child: Text(
+              widget.confirmText ?? localizations.okButtonLabel,
+              style: TextStyle(color: widget.okTextColour),
+            ),
           ),
         ],
       ),
@@ -771,6 +787,10 @@ Future<Duration?> showDurationPicker({
   String? confirmText,
   String? cancelText,
   Color? durationTypeChangerButtonColour,
+  Color? selectionFieldTextColour,
+  Color? okTextColour,
+  Color? cancelTextColour,
+  Color? headColour,
 }) async {
   return await showDialog<Duration>(
     context: context,
@@ -781,6 +801,10 @@ Future<Duration?> showDurationPicker({
       confirmText: confirmText,
       cancelText: cancelText,
       durationTypeChangerButtonColour: durationTypeChangerButtonColour,
+      selectionFieldTextColour: selectionFieldTextColour,
+      okTextColour: okTextColour,
+      cancelTextColour: cancelTextColour,
+      headColour: headColour,
     ),
   );
 }
@@ -809,6 +833,7 @@ class DurationPicker extends StatefulWidget {
   final double? width;
   final double? height;
   final Color? durationTypeChangerButtonColour;
+  final Color? selectionFieldTextColour;
 
   DurationPicker({
     this.duration = const Duration(minutes: 0),
@@ -817,6 +842,7 @@ class DurationPicker extends StatefulWidget {
     this.height,
     this.durationPickerMode,
     this.durationTypeChangerButtonColour,
+    this.selectionFieldTextColour,
   });
 
   @override
@@ -998,7 +1024,10 @@ class _DurationPicker extends State<DurationPicker> {
         width: double.infinity,
         child: Text(
           "Select ".toUpperCase() + currentDurationType.name.toUpperCase(),
-          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          style: TextStyle(
+            color: widget.selectionFieldTextColour ??
+                Theme.of(context).colorScheme.primary,
+          ),
           textAlign: TextAlign.left,
         ));
   }
