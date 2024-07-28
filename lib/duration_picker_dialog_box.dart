@@ -581,13 +581,8 @@ class _DurationPickerDialog extends StatefulWidget {
     this.elevation,
     this.backgroundColor,
     this.shadowColor,
-    this.surfaceTintColor,
-    this.insetAnimationDuration = const Duration(milliseconds: 100),
-    this.insetAnimationCurve = Curves.decelerate,
-    this.insetPadding,
-    this.clipBehavior = Clip.none,
-    this.shape,
     this.alignment,
+    this.borderRadius,
   }) : super(key: key);
 
   /// The duration initially selected when the dialog is shown.
@@ -617,12 +612,7 @@ class _DurationPickerDialog extends StatefulWidget {
   final double? elevation;
   final Color? backgroundColor;
   final Color? shadowColor;
-  final Color? surfaceTintColor;
-  final Duration insetAnimationDuration;
-  final Curve insetAnimationCurve;
-  final EdgeInsets? insetPadding;
-  final Clip clipBehavior;
-  final ShapeBorder? shape;
+  final BorderRadiusGeometry? borderRadius;
   final Alignment? alignment;
 
   @override
@@ -713,7 +703,19 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
 
     /// Widget with Head as Duration, Duration Picker Widget and Dialog as Actions - Cancel and OK.
     final Widget pickerAndActions = new Container(
-      color: theme.dialogBackgroundColor,
+      alignment: widget.alignment,
+      decoration: BoxDecoration(
+        color: widget.backgroundColor ?? theme.dialogBackgroundColor,
+        borderRadius: widget.borderRadius,
+        boxShadow: widget.shadowColor != null || widget.elevation != null
+            ? [
+                BoxShadow(
+                  color: widget.shadowColor ?? Colors.black,
+                  blurRadius: widget.elevation ?? 24,
+                ),
+              ]
+            : null,
+      ),
       child: new Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -762,16 +764,6 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
           }
         },
       ),
-      elevation: widget.elevation,
-      backgroundColor: widget.backgroundColor,
-      shadowColor: widget.shadowColor,
-      surfaceTintColor: widget.surfaceTintColor,
-      insetAnimationDuration: widget.insetAnimationDuration,
-      insetAnimationCurve: widget.insetAnimationCurve,
-      insetPadding: widget.insetPadding,
-      clipBehavior: widget.clipBehavior,
-      shape: widget.shape,
-      alignment: widget.alignment,
     );
 
     return new Theme(
@@ -834,7 +826,6 @@ Future<Duration?> showDurationPicker({
   return await showDialog<Duration>(
     context: context,
     builder: (BuildContext context) {
-      final $dialogStyle = dialogStyle ?? DialogStyle();
       final child = _DurationPickerDialog(
         initialDuration: initialDuration,
         durationPickerMode: durationPickerMode,
@@ -846,16 +837,11 @@ Future<Duration?> showDurationPicker({
         okTextColour: okTextColour,
         cancelTextColour: cancelTextColour,
         headColour: headColour,
-        elevation: $dialogStyle.elevation,
-        backgroundColor: $dialogStyle.backgroundColor,
-        shadowColor: $dialogStyle.shadowColor,
-        surfaceTintColor: $dialogStyle.surfaceTintColor,
-        insetAnimationDuration: $dialogStyle.insetAnimationDuration,
-        insetAnimationCurve: $dialogStyle.insetAnimationCurve,
-        clipBehavior: $dialogStyle.clipBehavior,
-        insetPadding: $dialogStyle.insetPadding,
-        shape: $dialogStyle.shape,
-        alignment: $dialogStyle.alignment,
+        elevation: dialogStyle?.elevation,
+        backgroundColor: dialogStyle?.backgroundColor,
+        shadowColor: dialogStyle?.shadowColor,
+        alignment: dialogStyle?.alignment,
+        borderRadius: dialogStyle?.borderRadius,
       );
       return builder == null ? child : builder(context, child);
     },
@@ -863,29 +849,19 @@ Future<Duration?> showDurationPicker({
 }
 
 class DialogStyle {
-  final Color? backgroundColor;
-  final Color? shadowColor;
-  final Color? surfaceTintColor;
-  final double? elevation;
-  final Duration insetAnimationDuration;
-  final Curve insetAnimationCurve;
-  final EdgeInsets? insetPadding;
-  final Clip clipBehavior;
-  final ShapeBorder? shape;
-  final Alignment? alignment;
-
   DialogStyle({
     this.backgroundColor,
     this.shadowColor,
-    this.surfaceTintColor,
     this.elevation,
-    this.insetAnimationDuration = const Duration(milliseconds: 100),
-    this.insetAnimationCurve = Curves.decelerate,
-    this.insetPadding,
-    this.clipBehavior = Clip.none,
-    this.shape,
+    this.borderRadius,
     this.alignment,
   });
+
+  final Color? backgroundColor;
+  final Color? shadowColor;
+  final double? elevation;
+  final Alignment? alignment;
+  final BorderRadiusGeometry? borderRadius;
 }
 
 /// A Widget for duration picker.
