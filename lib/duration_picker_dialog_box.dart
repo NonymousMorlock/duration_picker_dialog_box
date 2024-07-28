@@ -578,6 +578,16 @@ class _DurationPickerDialog extends StatefulWidget {
     this.okTextColour,
     this.cancelTextColour,
     this.headColour,
+    this.elevation,
+    this.backgroundColor,
+    this.shadowColor,
+    this.surfaceTintColor,
+    this.insetAnimationDuration = const Duration(milliseconds: 100),
+    this.insetAnimationCurve = Curves.decelerate,
+    this.insetPadding,
+    this.clipBehavior = Clip.none,
+    this.shape,
+    this.alignment,
   }) : super(key: key);
 
   /// The duration initially selected when the dialog is shown.
@@ -602,6 +612,18 @@ class _DurationPickerDialog extends StatefulWidget {
   final Color? okTextColour;
   final Color? cancelTextColour;
   final Color? headColour;
+
+  // Dialog Properties
+  final double? elevation;
+  final Color? backgroundColor;
+  final Color? shadowColor;
+  final Color? surfaceTintColor;
+  final Duration insetAnimationDuration;
+  final Curve insetAnimationCurve;
+  final EdgeInsets? insetPadding;
+  final Clip clipBehavior;
+  final ShapeBorder? shape;
+  final Alignment? alignment;
 
   @override
   _DurationPickerState createState() => new _DurationPickerState();
@@ -703,39 +725,54 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
       ),
     );
 
-    final Dialog dialog = new Dialog(child: new OrientationBuilder(
+    final Dialog dialog = new Dialog(
+      child: new OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {
-      switch (orientation) {
-        case Orientation.portrait:
-          return new SizedBox(
-              width: _kDurationPickerWidthPortrait,
-              height: _kDurationPickerHeightPortrait,
-              child: new Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    new Expanded(
-                      child: pickerAndActions,
-                    ),
-                  ]));
-        case Orientation.landscape:
-          return new SizedBox(
-              width: widget.showHead
-                  ? _kDurationPickerWidthLandscape
-                  : _kDurationPickerWidthLandscape,
-              height: widget.showHead
-                  ? _kDurationPickerHeightLandscape + 28
-                  : _kDurationPickerHeightLandscape,
-              child: new Row(
+          switch (orientation) {
+            case Orientation.portrait:
+              return new SizedBox(
+                  width: _kDurationPickerWidthPortrait,
+                  height: _kDurationPickerHeightPortrait,
+                  child: new Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        new Expanded(
+                          child: pickerAndActions,
+                        ),
+                      ]));
+            case Orientation.landscape:
+              return new SizedBox(
+                width: widget.showHead
+                    ? _kDurationPickerWidthLandscape
+                    : _kDurationPickerWidthLandscape,
+                height: widget.showHead
+                    ? _kDurationPickerHeightLandscape + 28
+                    : _kDurationPickerHeightLandscape,
+                child: new Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     new Flexible(
                       child: pickerAndActions,
                     ),
-                  ]));
-      }
-    }));
+                  ],
+                ),
+              );
+          }
+        },
+      ),
+      elevation: widget.elevation,
+      backgroundColor: widget.backgroundColor,
+      shadowColor: widget.shadowColor,
+      surfaceTintColor: widget.surfaceTintColor,
+      insetAnimationDuration: widget.insetAnimationDuration,
+      insetAnimationCurve: widget.insetAnimationCurve,
+      insetPadding: widget.insetPadding,
+      clipBehavior: widget.clipBehavior,
+      shape: widget.shape,
+      alignment: widget.alignment,
+    );
 
     return new Theme(
       data: theme.copyWith(
@@ -792,10 +829,12 @@ Future<Duration?> showDurationPicker({
   Color? okTextColour,
   Color? cancelTextColour,
   Color? headColour,
+  DialogStyle? dialogStyle,
 }) async {
   return await showDialog<Duration>(
     context: context,
     builder: (BuildContext context) {
+      final $dialogStyle = dialogStyle ?? DialogStyle();
       final child = _DurationPickerDialog(
         initialDuration: initialDuration,
         durationPickerMode: durationPickerMode,
@@ -807,10 +846,46 @@ Future<Duration?> showDurationPicker({
         okTextColour: okTextColour,
         cancelTextColour: cancelTextColour,
         headColour: headColour,
+        elevation: $dialogStyle.elevation,
+        backgroundColor: $dialogStyle.backgroundColor,
+        shadowColor: $dialogStyle.shadowColor,
+        surfaceTintColor: $dialogStyle.surfaceTintColor,
+        insetAnimationDuration: $dialogStyle.insetAnimationDuration,
+        insetAnimationCurve: $dialogStyle.insetAnimationCurve,
+        clipBehavior: $dialogStyle.clipBehavior,
+        insetPadding: $dialogStyle.insetPadding,
+        shape: $dialogStyle.shape,
+        alignment: $dialogStyle.alignment,
       );
       return builder == null ? child : builder(context, child);
     },
   );
+}
+
+class DialogStyle {
+  final Color? backgroundColor;
+  final Color? shadowColor;
+  final Color? surfaceTintColor;
+  final double? elevation;
+  final Duration insetAnimationDuration;
+  final Curve insetAnimationCurve;
+  final EdgeInsets? insetPadding;
+  final Clip clipBehavior;
+  final ShapeBorder? shape;
+  final Alignment? alignment;
+
+  DialogStyle({
+    this.backgroundColor,
+    this.shadowColor,
+    this.surfaceTintColor,
+    this.elevation,
+    this.insetAnimationDuration = const Duration(milliseconds: 100),
+    this.insetAnimationCurve = Curves.decelerate,
+    this.insetPadding,
+    this.clipBehavior = Clip.none,
+    this.shape,
+    this.alignment,
+  });
 }
 
 /// A Widget for duration picker.
