@@ -681,6 +681,7 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
               widget.durationTypeChangerButtonColour,
           selectionFieldTextColour: widget.selectionFieldTextColour,
           showCurrentValue: widget.showCurrentValue,
+          durationPickerMode: widget.durationPickerMode,
         ));
 
     /// Action Buttons - Cancel and OK
