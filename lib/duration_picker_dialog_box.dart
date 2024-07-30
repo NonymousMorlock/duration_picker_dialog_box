@@ -667,11 +667,12 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
     );
 
     /// Duration Picker Widget.
-    final Widget picker = new Padding(
+    debugPrint('Selected Duration is $_selectedDuration');
+    final Widget picker = Padding(
         padding:
             const EdgeInsets.only(left: 16.0, right: 16, top: 8, bottom: 8),
         child: DurationPicker(
-          duration: _selectedDuration ?? Duration(),
+          duration: _selectedDuration ?? Duration.zero,
           onChange: _handleDurationChanged,
           durationTypeChangerButtonColour:
               widget.durationTypeChangerButtonColour,
@@ -904,8 +905,8 @@ class DurationPicker extends StatefulWidget {
   final Color? selectionFieldTextColour;
   final bool showCurrentValue;
 
-  DurationPicker({
-    this.duration = const Duration(minutes: 0),
+  const DurationPicker({
+    this.duration = Duration.zero,
     required this.onChange,
     this.width,
     this.height,
@@ -937,10 +938,8 @@ class _DurationPicker extends State<DurationPicker> {
 
   @override
   void initState() {
-    super.initState();
     currentDurationType =
         widget.durationPickerMode ?? DurationPickerMode.Minute;
-    currentValue = getCurrentValue();
     days = widget.duration.inDays;
     hours = (widget.duration.inHours) % Duration.hoursPerDay;
     minutes = widget.duration.inMinutes % Duration.minutesPerHour;
@@ -951,6 +950,8 @@ class _DurationPicker extends State<DurationPicker> {
         widget.duration.inMicroseconds % Duration.microsecondsPerMillisecond;
     width = widget.width ?? _kDurationPickerWidthLandscape;
     height = widget.height ?? _kDurationPickerHeightLandscape;
+    super.initState();
+    currentValue = getCurrentValue();
   }
 
   Widget build(BuildContext context) {
