@@ -629,12 +629,8 @@ class _DurationPickerState extends State<_DurationPickerDialog> {
 
   @override
   void initState() {
+    _selectedDuration = widget.initialDuration;
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _selectedDuration = widget.initialDuration;
-      });
-    });
   }
 
   void _handleDurationChanged(Duration value) {
